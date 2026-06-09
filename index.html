@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real AR Floor Viewer</title>
+    <title>Shoe HUD AR</title>
     
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
     
@@ -14,32 +14,126 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            font-family: Arial, sans-serif;
+            background-color: #050505;
+            font-family: 'Courier New', Courier, monospace;
         }
+
         model-viewer {
             width: 100vw;
             height: 100vh;
-            background-color: #f5f5f5;
+            z-index: 1;
         }
-        #ar-button {
-            background-color: #007bff;
-            color: white;
-            border-radius: 30px;
-            border: none;
+
+        /* --- IRON MAN HUD INTERFACE --- */
+        .hud-container {
             position: absolute;
-            bottom: 30px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Taki burger ko ghumaya ja sake */
+            z-index: 10;
+            box-sizing: border-box;
+            border: 2px solid rgba(255, 68, 68, 0.2); /* Iron Man Red tint */
+            padding: 20px;
+        }
+
+        /* Neon Cyberpunk Text Style */
+        .hud-data {
+            position: absolute;
+            color: #ff3333; /* Iron Man Red Glowing */
+            text-shadow: 0 0 8px rgba(255, 51, 51, 0.8), 0 0 15px rgba(255, 51, 51, 0.4);
+            font-size: 13px;
+            letter-spacing: 2px;
+            line-height: 1.6;
+            text-transform: uppercase;
+        }
+
+        /* Cyber Cyan Tech Colors for contrast */
+        .cyan-text {
+            color: #00ffff;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+        }
+
+        .top-left { top: 35px; left: 25px; }
+        .top-right { top: 35px; right: 25px; text-align: right; }
+        .bottom-left { bottom: 110px; left: 25px; }
+
+        /* Scanning Laser Line */
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 51, 51, 0.4);
+            position: absolute;
+            animation: scan 3.5s linear infinite;
+            box-shadow: 0 0 12px rgba(255, 51, 51, 0.9);
+            z-index: 5;
+        }
+
+        @keyframes scan {
+            0% { top: 0%; }
+            50% { top: 100%; }
+            100% { top: 0%; }
+        }
+
+        .blink {
+            animation: blinker 0.8s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+
+        /* Sci-Fi Iron Man Style Button */
+        #ar-button {
+            background: transparent;
+            color: #ff3333;
+            border: 2px solid #ff3333;
+            border-radius: 6px;
+            position: absolute;
+            bottom: 35px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 16px 32px;
-            font-size: 16px;
+            padding: 14px 30px;
+            font-size: 13px;
             font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 3px;
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.5);
             cursor: pointer;
             z-index: 999;
+            pointer-events: auto;
+        }
+        #ar-button:active {
+            background: rgba(255, 51, 51, 0.2);
         }
     </style>
 </head>
 <body>
+
+    <div class="scanline"></div>
+
+    <div class="hud-container">
+        <div class="hud-data top-left">
+            <span class="blink" style="color: #00ffff;">[SCANNING...]</span><br>
+            OBJECT: <span class="cyan-text">CRISPY_BURGER_01</span><br>
+            STATUS: TARGET_LOCKED<br>
+            GRID: WEBXR_ENGAGED
+        </div>
+        
+        <div class="hud-data top-right">
+            ENERGY: <span class="cyan-text">480 KCAL</span><br>
+            WEIGHT: 210 GRAMS<br>
+            DIAMETER: 11.5 CM<br>
+            FAT_INDEX: HIGH
+        </div>
+
+        <div class="hud-data bottom-left">
+            SYS_TEMP: 68&deg;C<br>
+            RENDER: HIGH_POLY<br>
+            FPS_LOCK: 60.00
+        </div>
+    </div>
 
     <model-viewer 
         src="shoe.glb" 
@@ -48,11 +142,11 @@
         ar-placement="floor"
         camera-controls 
         touch-action="none" 
-        shadow-intensity="1.5"
+        shadow-intensity="2"
         autoplay>
         
         <button slot="ar-button" id="ar-button">
-            📸 View in Real AR (Floor Mode)
+            [ INITIATE WEBAR CAMERA ]
         </button>
         
     </model-viewer>
